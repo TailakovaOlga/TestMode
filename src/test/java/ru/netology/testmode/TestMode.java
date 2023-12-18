@@ -37,7 +37,7 @@ public class TestMode {
         $("[data-test-id='login'] input").setValue(blockedUser.getLogin());
         $("[data-test-id='password'] input").setValue(blockedUser.getPassword());
         $(".button").click();
-        $("[data-test-id='error-notification'] .notification__content")
+        $(".notification_status_error .notification__content")
                 .shouldHave(text("Ошибка! Пользователь заблокирован!"))
                 .shouldBe(visible, Duration.ofSeconds(15));
     }
