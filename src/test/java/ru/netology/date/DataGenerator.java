@@ -1,4 +1,4 @@
-package ru.netology.data;
+package ru.netology.date;
 
 import com.github.javafaker.Faker;
 import io.restassured.builder.RequestSpecBuilder;
@@ -12,10 +12,6 @@ import java.util.Locale;
 import static io.restassured.RestAssured.given;
 
 public class DataGenerator {
-
-    private DataGenerator() {
-    }
-
     private static final RequestSpecification requestSpec = new RequestSpecBuilder()
             .setBaseUri("http://localhost")
             .setPort(9999)
@@ -23,10 +19,12 @@ public class DataGenerator {
             .setContentType(ContentType.JSON)
             .log(LogDetail.ALL)
             .build();
-
     private static final Faker faker = new Faker(new Locale("en"));
 
-    private static void sendRequest(RegistrationDto user) {
+    private DataGenerator() {
+    }
+
+    private static RegistrationDto sendRequest(RegistrationDto user) {
         given()
                 .spec(requestSpec)
                 .body(user)
@@ -34,16 +32,15 @@ public class DataGenerator {
                 .post("/api/system/users")
                 .then()
                 .statusCode(200);
+        return user;
     }
 
     public static String getRandomLogin() {
-        String login = faker.name().username();
-        return login;
+        return faker.name().username();
     }
 
     public static String getRandomPassword() {
-        String password = faker.internet().password();
-        return password;
+        return faker.internet().password();
     }
 
     public static class Registration {
@@ -51,14 +48,11 @@ public class DataGenerator {
         }
 
         public static RegistrationDto getUser(String status) {
-            var user = new RegistrationDto(getRandomLogin(), getRandomPassword(), status);
-            return user;
+            return new RegistrationDto(getRandomLogin(), getRandomPassword(), status);
         }
 
         public static RegistrationDto getRegisteredUser(String status) {
-            var registeredUser = getUser(status);
-            sendRequest(registeredUser);
-            return registeredUser;
+            return sendRequest(getUser(status));
         }
     }
 
@@ -67,11 +61,5 @@ public class DataGenerator {
         String login;
         String password;
         String status;
-
-        public RegistrationDto(String randomLogin, String randomPassword, String status) {
-        }
-
-        }
     }
-
-
+}
